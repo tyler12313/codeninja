@@ -3,6 +3,13 @@ import random
 root = tk.Tk()
 root.title("Snake = 1")
 
+status_label = tk.Label(
+    root,
+    text="test",
+    bd=1,
+    padx=1, pady= 1)
+status_label.pack()
+
 SIZE = 20
 W = 400
 H = 400
@@ -20,14 +27,15 @@ dy = 0
 max_x = 20
 max_y = 20
 
-
-food = (random.randint(0, W//SIZE - 1),
-       random.randint(0, H//SIZE - 1))
+for i in range(5):
+    food = (random.randint(0, W//SIZE - 1),
+            random.randint(0, H//SIZE - 1))
 
 # superfood = (random.randint(0, W//SIZE - 1),
 #        random.randint(0, H//SIZE - 1))
 
 def draw():
+    
     canvas.delete("all")
 
     fx, fy = food
@@ -40,10 +48,8 @@ def draw():
         canvas.create_rectangle(x*SIZE, y*SIZE, x*SIZE+SIZE, y*SIZE+SIZE, fill="green")
 
 def game_loop():
-    game_over = False
-    if game_over:
-        return
-    global snake, food, superfood
+    
+    global snake, food, superfood, game_over
     head_x, head_y = snake[0]
     new_head = (head_x + dx, head_y + dy)
 
@@ -52,12 +58,14 @@ def game_loop():
     if new_head in snake:
         print("touching")
         game_over = True
-
+        status_label.config(text="Game Over")
     if new_head[0] < 0 or new_head[0] >= max_x or new_head[1] < 0 or new_head[1] >= max_y:
         print("wall collision")
 
         game_over = True
+        status_label.config(text="Game Over")
 
+    
     snake.insert(0, new_head)
 
 
@@ -65,9 +73,11 @@ def game_loop():
     if new_head == food:
         food = (random.randint(0, W//SIZE - 1),
                 random.randint(0, H//SIZE - 1))
+        # for i in range(99):
+        #     snake.insert(0, new_head)
         
     
-        # status_label.config(text="Game Over")
+        # 
     
    
         # status_label.config(text="Game Over")
@@ -80,23 +90,32 @@ def game_loop():
         snake.pop()
 
     draw()
-    root.after(150, game_loop)
+
+    
+
+    if game_over == False:
+        root.after(150, game_loop)
+        print(game_over)
 
 def up(event):
     global dx, dy
-    dx, dy = 0, -1
+    if dx != 0 and dy != 1:
+        dx, dy = 0, -1
 
 def down(event):
     global dx, dy
-    dx, dy = 0, 1
+    if dx != 0 and dy != -1:
+        dx, dy = 0, 1
 
 def left(event):
     global dx, dy
-    dx, dy = -1,0
+    if dx != 1 and dy != 0:
+        dx, dy = -1,0
 
 def right(event):
     global dx, dy
-    dx, dy = 1, 0
+    if dx != -1 and dy != 0:
+        dx, dy = 1, 0
 
 root.bind("<Up>",up)
 root.bind("<Down>",down)
@@ -105,4 +124,7 @@ root.bind("<Right>",right)
 
 draw()
 root.after(150, game_loop)
+
+
+
 root.mainloop()
