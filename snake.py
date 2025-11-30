@@ -1,5 +1,7 @@
 import tkinter as tk
 import random
+import time
+
 root = tk.Tk()
 root.title("Snake = 1")
 
@@ -27,29 +29,46 @@ dy = 0
 max_x = 20
 max_y = 20
 
-for i in range(5):
-    food = (random.randint(0, W//SIZE - 1),
+
+food = (random.randint(0, W//SIZE - 1),
             random.randint(0, H//SIZE - 1))
 
+wallset = set()
+
+for _ in range(25):
+    wallset.add((random.randint(1, W//SIZE - 2),
+                           random.randint(1, H//SIZE - 2)))
+# wall = (random.randint(0, W//SIZE - 1),
+#             random.randint(0, H//SIZE - 1))
 # superfood = (random.randint(0, W//SIZE - 1),
 #        random.randint(0, H//SIZE - 1))
 
 def draw():
     
+    
     canvas.delete("all")
-
+ 
     fx, fy = food
     canvas.create_oval(fx*SIZE, fy*SIZE, fx*SIZE+SIZE, fy*SIZE+SIZE, fill="red")
 
     # sx, sy = superfood
     # canvas.create_oval(sx*SIZE, sy*SIZE, sx*SIZE+SIZE, sy*SIZE+SIZE, fill="yellow")
 
+    for x, y in wallset:
+        canvas.create_rectangle(x*SIZE, y*SIZE,
+                                x*SIZE+SIZE, y*SIZE+SIZE,
+                                fill="black")
+
+
     for (x,y) in snake:
+
         canvas.create_rectangle(x*SIZE, y*SIZE, x*SIZE+SIZE, y*SIZE+SIZE, fill="green")
+
 
 def game_loop():
     
-    global snake, food, superfood, game_over
+    
+    global snake, food, wall, game_over
     head_x, head_y = snake[0]
     new_head = (head_x + dx, head_y + dy)
 
@@ -64,7 +83,9 @@ def game_loop():
 
         game_over = True
         status_label.config(text="Game Over")
-
+    if food in wallset:
+        food = (random.randint(0, W//SIZE - 1),
+                random.randint(0, H//SIZE - 1))
     
     snake.insert(0, new_head)
 
@@ -73,6 +94,7 @@ def game_loop():
     if new_head == food:
         food = (random.randint(0, W//SIZE - 1),
                 random.randint(0, H//SIZE - 1))
+        snake.insert(0, new_head)
         # for i in range(99):
         #     snake.insert(0, new_head)
         
@@ -86,6 +108,10 @@ def game_loop():
     #             random.randint(0, H//SIZE - 1))
     #     for i in range(4):
     #         snake.insert(0, new_head)
+    if new_head in wallset:
+        game_over = True
+        status_label.config(text="Game Over")
+
     else:
         snake.pop()
 
