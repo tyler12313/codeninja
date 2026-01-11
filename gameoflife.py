@@ -2,9 +2,13 @@
 import tkinter as tk 
 import random
 
-ROWS = 40
-COLS = 40
-CELL_SIZE = 15   
+ROWS = 60
+COLS = 60
+CELL_SIZE = 10  
+
+speed = 400
+
+running = False
 
 WIDTH = COLS * CELL_SIZE
 HEIGHT = ROWS * CELL_SIZE
@@ -94,7 +98,23 @@ def step():
     board = new_board
     draw_board()
                 
-           
+def run():
+    global running
+    if not running:
+        running = True
+        run_loop()
+
+def run_loop():
+    if not running:
+        return 
+    
+    step()
+    root.after(speed, run_loop)
+
+def stop():
+    global running
+    running = False
+
 def print_neighbours(event):
     c = event.x // CELL_SIZE
     r = event.y // CELL_SIZE
@@ -118,7 +138,11 @@ def random_board():
         for c in range(COLS):
             board[r][c] = random.randint(0, 1)
     draw_board()
-    
+
+def changespeed(value):
+    global speed
+    speed = value
+
 clear_btn = tk.Button(button_frame, text="Clear", command = clear_board)
 clear_btn.grid(row=0, column=0, padx=5)
 
@@ -128,6 +152,19 @@ random_btn.grid(row=0, column=1, padx=5)
 
 step_btn = tk.Button(button_frame, text="step",command =step)
 step_btn.grid(row=0, column=2, padx=5)
+
+run_btn = tk.Button(button_frame, text="run",command =run)
+run_btn.grid(row=1, column=0, padx=5, pady =5)
+
+stop_btn = tk.Button(button_frame, text="stop",command =stop)
+stop_btn.grid(row=1, column=1, padx=5, pady =5)
+
+changespeed_scale = tk.Scale(button_frame, variable = speed, from_ = 20, to = 1000, orient = "horizontal", command =changespeed)
+changespeed_scale.set(50)
+changespeed_scale.grid(row=1, column=2, padx=5, pady =5)
+
+# label1 = tk.Label(button_frame, text="speed(ms)")
+# label1.grid(row=0, column = 2, padx = 5, pady=)
 
 canvas.bind("<Button-3>", print_neighbours)
 canvas.bind("<Button-1>", toggle_cell)
