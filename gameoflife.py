@@ -84,10 +84,11 @@ def step():
             n = count_neighbours(r,c)
             if board[r][c] == 1:
                 #alive
-                if n == 2 or n == 3:
+                if n in(2,3):
                     new_board[r][c] = 1
                 else:
                     new_board[r][c] = 0
+                
             else:
                 #dead
                 if n == 3:
@@ -143,20 +144,20 @@ def changespeed(value):
     global speed
     speed = value
 
-clear_btn = tk.Button(button_frame, text="Clear", command = clear_board)
+clear_btn = tk.Button(button_frame, text="Clear", command = clear_board, bg="white")
 clear_btn.grid(row=0, column=0, padx=5)
 
-random_btn = tk.Button(button_frame, text="Random",command =random_board)
+random_btn = tk.Button(button_frame, text="Random",command =random_board, bg="blue")
 random_btn.grid(row=0, column=1, padx=5)
 
 
-step_btn = tk.Button(button_frame, text="step",command =step)
+step_btn = tk.Button(button_frame, text="step",command =step, bg="yellow")
 step_btn.grid(row=0, column=2, padx=5)
 
-run_btn = tk.Button(button_frame, text="run",command =run)
+run_btn = tk.Button(button_frame, text="run",command =run, bg="green")
 run_btn.grid(row=1, column=0, padx=5, pady =5)
 
-stop_btn = tk.Button(button_frame, text="stop",command =stop)
+stop_btn = tk.Button(button_frame, text="stop",command =stop, bg="red")
 stop_btn.grid(row=1, column=1, padx=5, pady =5)
 
 changespeed_scale = tk.Scale(button_frame, variable = speed, from_ = 20, to = 1000, orient = "horizontal", command =changespeed)
